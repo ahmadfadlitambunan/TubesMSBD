@@ -19,6 +19,12 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'qr_code' => Str::random(20),
+            'username' => fake()->userName(),
+            'no_phone' => fake()->phoneNumber(),
+            'gender' => fake()->randomElement(['1', '2']),
+            'level' => fake()->randomElement(['1', '2']),
+            'image' => 'image.jpg',
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password

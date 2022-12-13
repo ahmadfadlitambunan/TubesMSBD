@@ -52,13 +52,13 @@
                 </div>
                 <div class="form-group text-sm text-muted ">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="gender1" value='Laki - laki'>
+                        <input class="form-check-input" type="radio" name="gender" id="gender1" value='1'>
                         <label class="form-check-label" for="gender1">
                           Laki - Laki
                         </label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="gender2" value="Perempuan">
+                        <input class="form-check-input" type="radio" name="gender" id="gender2" value="2">
                         <label class="form-check-label" for="gender2">
                           Perempuan
                         </label>

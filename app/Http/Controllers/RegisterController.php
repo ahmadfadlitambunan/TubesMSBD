@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;    
+use Illuminate\Support\Str;    
 
 
 class RegisterController extends Controller
@@ -31,16 +32,18 @@ class RegisterController extends Controller
 
 
         $test = DB::insert(
-            "INSERT into `users` (`name`,`username`, `no_phone`, `email`, `gender`, `password`, `level`)
-                VALUES (?, ?, ?, ?, ?, ?, ?)", 
+            "INSERT into `users` (`name`,`qr_code`,`username`, `no_phone`, `email`, `gender`, `password`, `level`, `image`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
                     [   
                         $validatedData['name'],
+                        Str::random(20),
                         fake()->userName(),
                         $validatedData['no_phone'],
                         $validatedData['email'],
                         $validatedData['gender'],
                         $validatedData['password'],
-                        'Olympian'
+                        '2',
+                        'image.jpg'
                     ]);
         
         $request->session()->flash('success', 'Registration successfull! Please Login');

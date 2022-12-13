@@ -24,16 +24,22 @@
                 <img src="{{ asset('images/logo.svg') }}" alt="logo" class="logo">
               </div>
               <p class="login-card-description">Masukkan akun mu</p>
-              <form action="#!">
+              @if (session()->has('loginError'));
+              <div class="alert alert-danger" role="alert">
+                {{ session('loginError') }}
+              </div>
+              @endif
+              <form action="{{ route('login-process') }}" method="POST">
+                @csrf
                   <div class="form-group">
                     <label for="id" class="sr-only"></label>
-                    <input type="email" name="identity" id="id" class="form-control" placeholder="Username/Email/Nomor Handphone">
+                    <input type="text" name="identity" id="id" class="form-control" placeholder="Username/Email/Nomor Handphone">
                   </div>
                   <div class="form-group mb-4">
                     <label for="password" class="sr-only">Password</label>
                     <input type="password" name="password" id="password" class="form-control" placeholder="***********">
                   </div>
-                  <input name="login" id="login" class="btn btn-block login-btn mb-4" type="button" value="Login">
+                  <input name="login" id="login" class="btn btn-block login-btn mb-4" type="submit" value="Login">
                 </form>
                 <a href="#!" class="forgot-password-link">Forgot password?</a>
                 <p class="login-card-footer-text">Don't have an account? <a href="/register" class="text-reset">Register here</a></p>
