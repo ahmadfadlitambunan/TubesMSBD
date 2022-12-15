@@ -20,8 +20,9 @@ return new class extends Migration
             $table->foreignId('method_payment_id')->references('id')->on('method_payments')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamp('expired_at');
             $table->string('image')->nullable();
-            $table->enum('status', [0, 1, 2, 3])->default('0'); // 0 = belum dibayar, 1 = Pembayaran sukses, 2 = Nominal Kurang, 3 = pembayaran invalid.
+            $table->enum('status', [0, 1])->nullable(); // 0 = pembayaran invalid, 1 = Pembayaran sukses
             $table->foreignId('verified_by')->nullable();
+            $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
     }

@@ -15,9 +15,8 @@ return new class extends Migration
     {
         Schema::create('memberships', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_invoice')->references('id')->on('invoices')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('id_user')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('id_plan')->references('id')->on('plans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('invoice_id')->references('id')->on('invoices')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamp('start_at')->nullable();
             $table->timestamp('expired_at')->nullable();
             $table->timestamps();

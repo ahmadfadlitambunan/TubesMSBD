@@ -11,20 +11,21 @@
 		<div class="collapse text-center navbar-collapse" id="navbarsid">
 			<ul class="navbar-nav mx-auto">
 				<li class="nav-item active">
-					<a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
 				</li>
+				
+				{{-- <li class="nav-item"><a class="nav-link" href="service.html">Services</a></li> --}}
+				<li class="nav-item"><a class="nav-link" href="{{ route('membership-plan') }}">Membership</a></li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false">Pages.</a>
+						aria-expanded="false">Latihan</a>
 					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="about.html">About</a></li>
-						<li><a class="dropdown-item" href="trainer.html">Trainer</a></li>
-						<li><a class="dropdown-item" href="course.html">Courses</a></li>
+						<li><a class="dropdown-item" href="about.html">Program</a></li>
+						<li><a class="dropdown-item" href="trainer.html">Gerakan</a></li>
+						<li><a class="dropdown-item" href="course.html">Alat</a></li>
 					</ul>
 				</li>
-				<li class="nav-item"><a class="nav-link" href="service.html">Services</a></li>
-				<li class="nav-item"><a class="nav-link" href="pricing.html">Memebership</a></li>
-				<li class="nav-item dropdown">
+				{{-- <li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false">Blog.</a>
 					<ul class="dropdown-menu">
@@ -32,11 +33,12 @@
 						<li><a class="dropdown-item" href="blog-sidebar.html">Blog Sidebar</a></li>
 						<li><a class="dropdown-item" href="blog-single.html">Blog Details</a></li>
 					</ul>
-				</li>
-				<li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+				</li> --}}
+
+				{{-- <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li> --}}
 			</ul>
 			<div class="my-md-0 ml-lg-4 mt-4 mt-lg-0 ml-auto text-lg-right mb-3 mb-lg-0 dropdown">
-				@if (Auth::user())	
+				@if (Auth::user())
 				<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
 				aria-expanded="false">
 					<img class="img-fluid rounded-circle  my-1 img-profile" src="images/about/img-1.jpg" alt="" width="50px"></a>

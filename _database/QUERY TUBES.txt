@@ -1,0 +1,24 @@
+
+// Query Transaction untuk Transaksi Membership
+DELIMITER &&
+CREATE OR REPLACE PROCEDURE verify_order(IN ord INT(20), IN adm INT(20), IN st CHAR(1))
+BEGIN
+    DECLARE user INT; 
+    DECLARE duration INT;
+    DECLARE invoice_id INT;
+    SELECT o.user_id INTO user FROM orders o WHERE o.id = ord;
+    SELECT plans.duration_month INTO duration FROM orders JOIN plans ON orders.id = plans.id WHERE orders.id = ord;
+    START TRANSACTION;
+		UPDATE orders SET status = st, verified_by = adm, verified_at = NOW() WHERE id = ord;
+        INSERT INTO invoices (order_id, created_at, updated_at) VALUES (ord, NOW(), NOW());
+        SELECT LAST_INSERT_ID() INTO invoice_id;
+        INSERT INTO memberships (invoice_id, user_id, start_at, expired_at, created_at, updated_at)
+        			VALUES (invoice_id,
+                      user,
+                      NOW(),
+                      DATE_ADD(NOW(), INTERVAL duration MONTH), 
+                      NOW(),
+                      NOW());
+        COMMIT;
+END&&
+DELIMITER ;

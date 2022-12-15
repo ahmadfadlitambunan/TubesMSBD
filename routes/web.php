@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\MemberPlanController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\WEB\MemberPlanController;
+use App\Http\Controllers\Admin\VerifOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,9 @@ Route::post('authenticate', [LoginController::class, 'authenticate'])->name('log
 
 //Logout
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Perlu Verifikasi
+Route::get('/admin/perlu-verifikasi', [VerifOrderController::class, 'getUnverifiedOrder'])->name('verif-table');
 
 // membership
 Route::group(['prefix' => 'membership'], function() {
@@ -70,6 +74,12 @@ Route::get('/latihan/jenis-latihan', function() {
 Route::get('/profile/edit/', function() {
     return view('profile.edit-profile');
 });
+
+
+Route::get('/admin', function() {
+    return view('dashboard.admin.index');
+});
+
 
 
 // Route::get('/login', function() {
