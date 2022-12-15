@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use \App\Models\Plan;
-use \App\Models\Invoice;
+use \App\Models\Order;
 use Auth;
 
 class MemberPlanController extends Controller
@@ -30,8 +30,8 @@ class MemberPlanController extends Controller
         ]);
     }
 
-    public function makeInvoice(Request $request){
-        // $store = DB::table(`invoice`)->raw("INSERT INTO invoices (`user_id`, `plan_id`, `id_method_payment`, `expired_at`)
+    public function makeOrder(Request $request){
+        // $store = DB::table(`order`)->raw("INSERT INTO orders (`user_id`, `plan_id`, `id_method_payment`, `expired_at`)
         //             VALUES(?, ?, ?, ?)", [
         //                 Auth::user()->id,
         //                 request('plan'),
@@ -47,10 +47,10 @@ class MemberPlanController extends Controller
         //     ]);
         
 
-        $result = Invoice::on('mysql')->create([
+        $result = Order::on('mysql')->create([
             'user_id' => Auth::user()->id,
             'plan_id' =>  request('plan'),
-            'id_method_payment' => request('payment'),
+            'method_payment_id' => request('payment'),
             'expired_at' => date('Y-m-d H:i:s', strtotime(now() . " + 1 day"))
             ]);
 
@@ -63,7 +63,7 @@ class MemberPlanController extends Controller
                 showConfirmButton: true,
               })</script>";
 
-            return redirect(route('invoice-detail', ['id' => $result->id] ))->withSuccess($msg);
+            return redirect(route('order-detail', ['id' => $result->id] ))->withSuccess($msg);
         }
 
         return back()->with('failed',
@@ -75,7 +75,7 @@ class MemberPlanController extends Controller
           })<script>");
     }
 
-    public function detailInvoice($id){
+    public function detailOrder($id){
 
         $result = DB::select("SELECT i.id, 
                 i.created_at, 
@@ -86,20 +86,20 @@ class MemberPlanController extends Controller
                 m.name as name_payment,
                 m.a_n,
                 m.account_no
-            FROM invoices i 
+            FROM orders i 
             JOIN plans p ON i.plan_id = p.id
-            JOIN method_payments m ON i.id_method_payment = m.id
+            JOIN method_payments m ON i.method_payment_id = m.id
             WHERE i.id = ".$id." LIMIT 1;");
 
-        foreach ($result as $key => $invoice) {
+        foreach ($result as $key => $order) {
         }
 
         return view('membership.upload-bukti', [
-            'invoice' => $invoice
+            'order' => $order
         ]);
     }
 
-    public function storeImagePayment(Request $request, Invoice $invoice) {
+    public function storeImagePayment(Request $request, Order $order) {
 
         $validated = $request->validate([
             'image' => 'required|image|max:1024',
@@ -108,7 +108,7 @@ class MemberPlanController extends Controller
         if($request->file('image')) {
             $validated['image'] = $request->file('image')->store('payment_images');
         }
-        $invoice->update([
+        $order->update([
             'image' => $validated['image']
         ]);
 

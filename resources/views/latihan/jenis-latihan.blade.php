@@ -27,12 +27,12 @@
                     <div class="card">
                       <div class="card-header" id="heading{{ $i }}">
                         <div class="row">
-                            <div class="col-lg-2 col-sm-6">
+                            <div class="col-lg-2 col-sm-4">
                                 <a href="#" data-toggle="collapse" data-target="#collapse{{ $i }}" aria-expanded="true" aria-controls="collapse{{ $i }}">
                                   <img src="{{ asset('images/about/img-1.jpg') }}" alt="" class="img-fluid rounded-circle" width="80px">
                                 </a>
                             </div>
-                            <div class="col-lg-9 col-sm-6">
+                            <div class="col-lg-9 col-sm-8 ">
                                 <h5>Nama Latihan</h5>
                                 <p>2 Sets x 15 reps</p>
                             </div>

@@ -38,7 +38,7 @@
             <div class="col-lg-6">
                 <div class="card bg-gray">
                     <div class="card-body">
-                        <form action="{{ route('make-invoice') }}" method="POST">
+                        <form action="{{ route('make-order') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="jenisMembership" class="h6">Paket Membership</label>

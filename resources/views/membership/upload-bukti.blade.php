@@ -34,32 +34,32 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
-                                <h4>NO Invoice</h4>
-                                <p class="font-weight-bold">{{ $invoice->id }}</p>
+                                <h4>NO Order</h4>
+                                <p class="font-weight-bold">{{ $order->id }}</p>
                             </div>
                             <div class="col-6">
                                 <h4>Tanggal</h4>
-                                <p class="font-weight-bold">{{ $invoice->created_at }}</p>
+                                <p class="font-weight-bold">{{ $order->created_at }}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <h4>Paket membership</h4>
-                                <p class="font-weight-bold">{{ $invoice->name_plan }}</p>
+                                <p class="font-weight-bold">{{ $order->name_plan }}</p>
                             </div>
                             <div class="col-6">
                                 <h4>Jumlah</h4>
-                                <p class="font-weight-bold">Rp {{ $invoice->price }}</p>
+                                <p class="font-weight-bold">Rp {{ $order->price }}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <h4>Metode Pembayaran</h4>
-                                <p class="font-weight-bold">{{ $invoice->name_payment }}</p>
+                                <p class="font-weight-bold">{{ $order->name_payment }}</p>
                             </div>
                             <div class="col-6">
                                 <h4>No Rekening</h4>
-                                <p class="font-weight-bold">{{ $invoice->account_no ." a.n ". $invoice->a_n }}</p>
+                                <p class="font-weight-bold">{{ $order->account_no ." a.n ". $order->a_n }}</p>
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
           </button>
         </div>
         <div class="modal-body">
-            <form action="{{ route('kirim-bukti', ['invoice' => $invoice->id]) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('kirim-bukti', ['order' => $order->id]) }}" method="post" enctype="multipart/form-data">
                 @method('put')
                 @csrf
                 <div id="#preview">

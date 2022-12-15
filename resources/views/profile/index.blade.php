@@ -14,9 +14,9 @@
         </div>
       </div>
     </div>
-  </section>
+</section>
   {{-- Profile Section --}}
-    <section class="section">
+<section class="section">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-4">
@@ -92,6 +92,6 @@
 			</div>
 		</div>
 	</div>
-    </section>
+</section>
  {{-- Profile Section --}}
 @endsection

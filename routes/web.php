@@ -37,12 +37,10 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::group(['prefix' => 'membership'], function() {
     Route::get('/', [MemberPlanController::class, 'index'])->name('membership-plan');
     Route::get('/details/{id}', [MemberPlanController::class, 'detailMembership'])->name('membership-detail');
-    Route::post('/make-invoice', [MemberPlanController::class, 'makeInvoice'])->name('make-invoice');
-    Route::get('/invoice-detail/{id}', [MemberPlanController::class, 'detailInvoice'])->name('invoice-detail');
-    Route::put('/kirim-bukti/{invoice}', [MemberPlanController::class, 'storeImagePayment'])->name('kirim-bukti');
+    Route::post('/make-order', [MemberPlanController::class, 'makeOrder'])->name('make-order');
+    Route::get('/order-detail/{id}', [MemberPlanController::class, 'detailOrder'])->name('order-detail');
+    Route::put('/kirim-bukti/{order}', [MemberPlanController::class, 'storeImagePayment'])->name('kirim-bukti');
 });
-
-
 
 
 Route::post('/membership/buat-transaksi', function(){
@@ -67,6 +65,10 @@ Route::get('/latihan/detail', function() {
 
 Route::get('/latihan/jenis-latihan', function() {
     return view('latihan.jenis-latihan');
+});
+
+Route::get('/profile/edit/', function() {
+    return view('profile.edit-profile');
 });
 
 
