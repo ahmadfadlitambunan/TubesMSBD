@@ -1,10 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\WEB\LatihanController;
+use App\Http\Controllers\WEB\ExerciseController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\WEB\MemberPlanController;
 use App\Http\Controllers\Admin\VerifOrderController;
+use App\Http\Controllers\WEB\GerakanLatihanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +25,9 @@ Route::get('/', function () {
     return view('index');
 });
 
+//ajax
+Route::post('/ajax-modal', [AjaxController::class, 'ajaxModal'])->name('ajax-modal');
+Route::post('/ajax-filter', [AjaxController::class, 'filterAjax'])->name('ajax-filter');
 
 
 // Register
@@ -55,30 +62,43 @@ Route::get('/membership/bukti-pembayaran', function(){
     return view('membership.upload-bukti');
 });
 
+Route::group(['prefix' => 'latihan'], function() {
+    Route::get('/', [LatihanController::class, 'index'] )->name('latihan');
+    Route::post('/create', [LatihanController::class, 'saveWorkout'])->name('save-workout');
+    Route::get('/gerakan-latihan', [ExerciseController::class, 'index'])->name('gerakan-latihan');
+});
+
 Route::get('/profile', function(){
     return view('profile.index');
 })->name('profile')->middleware('auth');
 
-Route::get('/latihan', function() {
-    return view('latihan.index');
-});
+
 
 Route::get('/latihan/detail', function() {
     return view('latihan.latihan');
-});
+})->name('latihan-detail');
 
-Route::get('/latihan/jenis-latihan', function() {
-    return view('latihan.jenis-latihan');
-});
 
 Route::get('/profile/edit/', function() {
     return view('profile.edit-profile');
 });
 
 
-Route::get('/admin', function() {
-    return view('dashboard.admin.index');
+Route::group(['prefix' => 'admin'], function() {
+    Route::get('/', function() {
+        return view('dashboard.admin.index');
+    });
+
+    //CMS
+    // Route::group(['prefix' => 'cms'],)
 });
+
+
+
+
+
+
+
 
 
 

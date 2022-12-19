@@ -19,6 +19,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'goal_id' => fake()->numberBetween(1, 4),
             'qr_code' => Str::random(20),
             'username' => fake()->userName(),
             'no_phone' => fake()->phoneNumber(),

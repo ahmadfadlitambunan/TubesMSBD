@@ -28,6 +28,8 @@
     
     <!-- data tables -->
     <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <!-- Select 2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
@@ -49,6 +51,9 @@
     {{-- Trix Editor --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('/css/trix.css') }}">
     <script type="text/javascript" src="{{ asset('/js/trix.js') }}"></script>
+
+    <!-- Select 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <style>
         trix-toolbar [data-trix-button-group="file-tools"] {
@@ -124,6 +129,7 @@
     </div>
 
     <script src="{{ asset('/js/demo/datatables-demo.js') }}"></script>
+    @yield('script');
 </body>
 
 </html>

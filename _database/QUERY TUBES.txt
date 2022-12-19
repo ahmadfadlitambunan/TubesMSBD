@@ -21,4 +21,26 @@ BEGIN
                       NOW());
         COMMIT;
 END&&
-DELIMITER ;
+
+// Query trigger untuk cek gerakan latihan yang duplikat dalam 1 program latihan;
+DELIMITER &&
+CREATE TRIGGER check_duplikat_exercise
+BEFORE INSERT ON `workout_exercises`
+FOR EACH ROW
+BEGIN
+    IF((SELECT COUNT(`exercise_id`) FROM `workout_exercises` WHERE `workout_id` = NEW.workout_id AND `exercise_id` = NEW.exercise_id) > 0)
+        THEN SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Program latihan tidak boleh memiliki gerakan yang sama lebih dari satu!';
+    END IF;
+END &&
+
+// fungsi menghitung jumlah gerakan dalam program
+DELIMITER &&
+CREATE OR REPLACE FUNCTION count_jlh_latihan(id_workout int(20)) RETURNS INT(10)
+BEGIN
+RETURN (SELECT COUNT('workout_exercises.exercise_id') FROM workouts w
+JOIN workout_exercises we ON id_workout = we.workout_id
+GROUP BY we.workout_id);
+END &&
+
+

@@ -20,7 +20,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <div class="row">
                             <div class="col-6">
                                 <h3>Nama Latihan</h3>
@@ -52,14 +52,14 @@
 				<div class="accordion" id="accordionExample">
                 {{-- Accordion 1 --}}
                     <div class="card">
-                      <div class="card-header" id="headingOne">
+                      <div class="card-body" id="headingOne">
                         <div class="row">
-                            <div class="col-lg-2 col-sm-6">
+                            <div class="col-lg-2 col-4">
                                 <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                   <img src="{{ asset('images/about/img-1.jpg') }}" alt="" class="img-fluid rounded-circle" width="80px">
                                 </a>
                             </div>
-                            <div class="col-lg-9 col-sm-6">
+                            <div class="col-lg-9 col-8">
                                 <h5>Nama Latihan</h5>
                                 <p>2 Sets x 15 reps</p>
                             </div>
@@ -180,7 +180,6 @@
                 </div>
 			</div>
 		</div>
-
 	</div>
 </section>
 @endsection

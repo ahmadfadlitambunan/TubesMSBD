@@ -20,8 +20,8 @@
 					<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false">Latihan</a>
 					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="about.html">Program</a></li>
-						<li><a class="dropdown-item" href="trainer.html">Gerakan</a></li>
+						<li><a class="dropdown-item" href="{{ route('latihan') }}">Program</a></li>
+						<li><a class="dropdown-item" href="{{ route('gerakan-latihan') }}">Gerakan</a></li>
 						<li><a class="dropdown-item" href="course.html">Alat</a></li>
 					</ul>
 				</li>
