@@ -48,9 +48,9 @@
                                 </td>
                                 <td><img src="{{ asset("/images/about/img-1.jpg") }}" alt="" srcset="" width="100px" height="100px"></td>
                                 <td>
-                                    <a href="{{ route('exercise.show', ['exercise' => $exercise->id]) }}" class="btn btn-sm btn-success"><i
+                                    <a href="#" class="btn btn-sm btn-success"><i
                                         class="fa fa-eye" aria-hidden="true"></i></a>
-                                    <a href="{{ route('exercise.edit', ['exercise' => $exercise->id]) }}" class="btn btn-sm btn-warning"><i
+                                    <a href="#" class="btn btn-sm btn-warning"><i
                                             class="fa fa-edit" aria-hidden="true"></i></a>
 
                                     <form action="#" method="POST" class="d-inline">

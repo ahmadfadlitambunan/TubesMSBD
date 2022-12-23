@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\WEB;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
+use Auth;
+use Carbon\Carbon;
 use \App\Models\Plan;
 use \App\Models\Order;
-use Auth;
+use App\Models\Invoice;
+use App\Models\Payment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class MemberPlanController extends Controller
 {
@@ -46,61 +49,49 @@ class MemberPlanController extends Controller
         //     'id_method_payment' => request('payment'),
         //     'expired_at' => date('Y-m-d', strtotime(now() . " + 1 day"))
         //     ]);
+        // return $amount = Plan::find(request('id'));
+        DB::beginTransaction();
         
+        try {
+            
+            $harga = Plan::select('price')->find(request('plan'));
 
-        $result = Order::on('mysql')->create([
-            'user_id' => Auth::user()->id,
-            'plan_id' =>  request('plan'),
-            'method_payment_id' => request('payment'),
-            'expired_at' => date('Y-m-d H:i:s', strtotime(now() . " + 1 day"))
+            $result = Invoice::create([
+                'user_id' => Auth::user()->id,
+                'plan_id' => request('plan'),
+                'pending_amount' => $harga->price,
+                'method_payment_id' => request('payment'),
+                'expired_at' => Carbon::now()->addDays(3),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
+            DB::commit();
 
+            return redirect()->route('order-detail', ['id' => $result->id])->with('success', "Pesanan Berhasil Dibuat, Silahkan upload bukti pembayaran");
+            
+        } catch(\Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
+            return back()->with('error', "Pesanan gagal dibuat, silahkan coba lagi");
 
-        if($result) {
-            $msg ="<script>Swal.fire({
-                icon: 'success',
-                title: 'Pesanan Berhasil Dibuat',
-                text: 'Silahkan upload bukti pembayaran untuk validasi pesanan!',
-                showConfirmButton: true,
-              })</script>";
-
-            return redirect(route('order-detail', ['id' => $result->id] ))->withSuccess($msg);
         }
-
-        return back()->with('failed',
-        "<script>Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong!',
-            showConfirmButton: true,
-          })<script>");
     }
+
 
     public function detailOrder($id){
 
-        $result = DB::select("SELECT i.id, 
-                i.created_at, 
-                i.expired_at, 
-                i.image,
-                p.name as name_plan,
-                p.price,
-                m.name as name_payment,
-                m.a_n,
-                m.account_no
-            FROM orders i 
-            JOIN plans p ON i.plan_id = p.id
-            JOIN method_payments m ON i.method_payment_id = m.id
-            WHERE i.id = ".$id." LIMIT 1;");
+        $result = DB::select("CALL detail_invoice(?)", [$id]);
 
         foreach ($result as $key => $order) {
         }
 
         return view('membership.upload-bukti', [
-            'order' => $order
+            'order' => $order,
+            'payments' => Payment::where('invoice_id', '=', $id)->get()
         ]);
     }
 
-    public function storeImagePayment(Request $request, Order $order) {
+    public function storeImagePayment(Request $request, $invoice_id) {
 
         $validated = $request->validate([
             'image' => 'required|image|max:1024',
@@ -110,18 +101,17 @@ class MemberPlanController extends Controller
             $validated['image'] = $request->file('image')->store('payment_images');
         }
         
-        $order->update([
-            'image' => $validated['image']
-        ]);
+        try {
+            $result = Payment::create([
+                'image' => $validated['image'],
+                'invoice_id' => $invoice_id
+            ]);
 
-         /*
-            $invoice didapat dari route model binding
-            SELECT * FROM invoices WHERE id = {invoice} -> id yang diberi lewat URI
+            return redirect()->route('history-transaksi')->with('success', "Bukti Pembayaran berhasil di-upload.Pembayaran segera di-verifikasi");
 
-            Query Update :
-            UPDATE invoices SET image = $validated['image] WHERE id = {invoice} -> id yang diberi lewat URI
-         */
-
-        return redirect(route('profile'));
+        } catch(\Exception $e) {
+            return back()->with('error', "Bukti Pembayaran gagal di-upload. Silahkan coba lagi");
+        }
+        
     }
 }

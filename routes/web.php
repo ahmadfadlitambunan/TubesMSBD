@@ -4,10 +4,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\WEB\LatihanController;
+use App\Http\Controllers\WEB\UserWebController;
+use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\WEB\ExerciseController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\WEB\MemberPlanController;
 use App\Http\Controllers\Admin\VerifOrderController;
+use App\Http\Controllers\Admin\CmsExerciseController;
 use App\Http\Controllers\WEB\GerakanLatihanController;
 
 /*
@@ -26,8 +29,9 @@ Route::get('/', function () {
 });
 
 //ajax
-Route::post('/ajax-modal', [AjaxController::class, 'ajaxModal'])->name('ajax-modal');
 Route::post('/ajax-filter', [AjaxController::class, 'filterAjax'])->name('ajax-filter');
+Route::post('/ajax-modal', [AjaxController::class, 'ajaxModal'])->name('ajax-modal');
+
 
 
 // Register
@@ -41,16 +45,13 @@ Route::post('authenticate', [LoginController::class, 'authenticate'])->name('log
 //Logout
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Perlu Verifikasi
-Route::get('/admin/perlu-verifikasi', [VerifOrderController::class, 'getUnverifiedOrder'])->name('verif-table');
-
 // membership
 Route::group(['prefix' => 'membership'], function() {
     Route::get('/', [MemberPlanController::class, 'index'])->name('membership-plan');
     Route::get('/details/{id}', [MemberPlanController::class, 'detailMembership'])->name('membership-detail');
     Route::post('/make-order', [MemberPlanController::class, 'makeOrder'])->name('make-order');
     Route::get('/order-detail/{id}', [MemberPlanController::class, 'detailOrder'])->name('order-detail');
-    Route::put('/kirim-bukti/{order}', [MemberPlanController::class, 'storeImagePayment'])->name('kirim-bukti');
+    Route::put('/kirim-bukti/{id}', [MemberPlanController::class, 'storeImagePayment'])->name('kirim-bukti');
 });
 
 
@@ -65,23 +66,20 @@ Route::get('/membership/bukti-pembayaran', function(){
 Route::group(['prefix' => 'latihan'], function() {
     Route::get('/', [LatihanController::class, 'index'] )->name('latihan');
     Route::post('/create', [LatihanController::class, 'saveWorkout'])->name('save-workout');
-    Route::get('/gerakan-latihan', [ExerciseController::class, 'index'])->name('gerakan-latihan');
+    Route::get('/{workout}', [LatihanController::class, 'show'])->name('show-workout');
 });
 
-Route::get('/profile', function(){
-    return view('profile.index');
-})->name('profile')->middleware('auth');
-
-
-
-Route::get('/latihan/detail', function() {
-    return view('latihan.latihan');
-})->name('latihan-detail');
-
-
-Route::get('/profile/edit/', function() {
-    return view('profile.edit-profile');
+Route::group(['prefix' => 'exercise'], function() {
+    Route::get('/{exercise}',  [LatihanController::class, 'showExercise'])->name('show-exercise');
+    Route::get('/', [LatihanController::class, 'exercise'])->name('gerakan-Latihan');
 });
+
+Route::group(['prefix' => 'profile'], function() {
+    Route::get('/', [UserWebController::class, 'index'])->name('profile');
+    Route::get('/edit', [UserWebController::class, 'edit'])->name('edit-profile');
+});
+
+Route::get('history-transaksi', [UserWebController::class, 'history'])->name('history-transaksi');
 
 
 Route::group(['prefix' => 'admin'], function() {
@@ -90,22 +88,20 @@ Route::group(['prefix' => 'admin'], function() {
     });
 
     //CMS
-    // Route::group(['prefix' => 'cms'],)
+    Route::resource('exercise', CmsExerciseController::class);
+
+    // Perlu Verifikasi
+    Route::get('/perlu-verifikasi', [VerifOrderController::class, 'getUnverifiedOrder'])->name('verif-table');
+    Route::get('ajax-show-unverified', [VerifOrderController::class, 'ajaxShow'])->name('unverified.show');
+    Route::post('/verify-invoice', [VerifOrderController::class, 'verifyInvoice'])->name('verify-invoice');
+
+    // Membership
+    Route::get('/member/aktif', [MemberController::class, 'index'])->name('member-active');
+    Route::get('/member/all', [MemberController::class, 'indexALL'])->name('member-all');
+    Route::get('/member/in-aktif', [MemberController::class, 'indexInactive'])->name('member-inactive');
+    Route::get('/member/create', [MemberController::class, 'create'])->name('member-create');
+    Route::post('/member', [MemberController::class, 'makeMembership'])->name('make-member');
 });
 
-
-
-
-
-
-
-
-
-
-// Route::get('/login', function() {
-//     return view('auth.login');
-// });
-
-// Route::get('/register', function() {
-//     return view('auth.register');
-// });
+// ajax
+Route::get('/ajax-harga', [MemberController::class, 'ajaxHarga'])->name('ajax-harga');

@@ -21,7 +21,7 @@
 						aria-expanded="false">Latihan</a>
 					<ul class="dropdown-menu">
 						<li><a class="dropdown-item" href="{{ route('latihan') }}">Program</a></li>
-						<li><a class="dropdown-item" href="{{ route('gerakan-latihan') }}">Gerakan</a></li>
+						<li><a class="dropdown-item" href="{{ route('gerakan-Latihan') }}">Gerakan</a></li>
 						<li><a class="dropdown-item" href="course.html">Alat</a></li>
 					</ul>
 				</li>

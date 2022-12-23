@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('invoice_id')->references('id')->on('invoices')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('plan_id')->references('id')->on('plans')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamp('start_at')->nullable();
             $table->timestamp('expired_at')->nullable();
             $table->timestamps();

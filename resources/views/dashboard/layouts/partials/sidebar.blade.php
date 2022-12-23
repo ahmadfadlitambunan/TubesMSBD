@@ -43,13 +43,7 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="#">Admin</a>
-                <a class="collapse-item" href="#">Membership</a>
-                <a class="collapse-item" href="#">Equipment</a>
-                <a class="collapse-item" href="#">Training</a>
-                <a class="collapse-item" href="#">invoice</a>
-                <a class="collapse-item" href="#">Jenis Pembayaran</a>
-                <a class="collapse-item" href="#">Metode Pembayaran</a>
+                <a class="collapse-item" href="{{ route('exercise.index') }}">Exercise</a>
             </div>
         </div>
     </li>
@@ -57,14 +51,15 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true"
             aria-controls="collapse">
-            <i class="fas fa-fw fa-database"></i>
-            <span>Workout</span>
+            <i class="fas fa-fw fa-id-card"></i>
+            <span>Member</span>
         </a>
         <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="#">Workout Training</a>
-                <a class="collapse-item" href="#">Workout Body Area</a>
-                <a class="collapse-item" href="#">Workkout Equipment</a>
+                <a class="collapse-item" href="{{ route('member-active') }}">Member Aktif</a>
+                <a class="collapse-item" href="{{ route('member-all') }}">Semua Member</a>
+                <a class="collapse-item" href="{{ route('member-inactive') }}">Member Inaktif</a>
+                <a class="collapse-item" href="#">Tambah Member</a>
             </div>
         </div>
     </li>

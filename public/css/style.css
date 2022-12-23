@@ -853,5 +853,19 @@ ul.dropdown-menu li {
   text-transform: uppercase;
 }
 
+.header-history {
+  background: linear-gradient(90deg, #fe9418 0%, rgb(245, 99, 75) 100%);
+  color: #fff !important;
+  transform: translateY(-5px);
+  border-radius: 5px;
+  text-align: center;
+}
 
+.body-history {
+  border: 2px solid rgb(245, 203, 197);
+  color: #000 !important;
+  background: transparent;
+  border-radius: 5px;
+  text-align: center;
+}
 /*# sourceMappingURL=style.css.map */

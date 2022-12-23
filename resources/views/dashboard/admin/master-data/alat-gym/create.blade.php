@@ -8,13 +8,12 @@
                 <h6 class="mr-auto font-weight-bold text-primary">Menambahkan Exercise</h6>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ route('exercise.update', ['exercise' => $exercise->id]) }}" enctype="multipart/form-data">
-                    @method('put')
+                <form method="POST" action="{{ route('exercise.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-6">
                             <label for="name">Nama Gerakan</label>
-                            <input type="text" placeholder="Nama Gerakan Latihan" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $exercise->name) }}" >
+                            <input type="text" placeholder="Nama Gerakan Latihan" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" >
                             @error('name')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -23,15 +22,11 @@
                         </div>
                         <div class="col-6">
                             <div id="#preview">
-                                @if ($exercise->image)                        
-                                <img src="{{ asset('storage/'.$exercise->image) }}" alt="" class="img-preview img-fluid mb-3 col-sm-4">
-                                @else
+                                <label for="image">Gambar</label>
                                 <img class="img-preview img-fluid mb-3 col-sm-4">
-                                @endif
                             </div>
                             <div class="custom-file">
-                                <input type="hidden" name="oldImage" value="{{ $exercise->image }}">
-                                <input type="file" class="custom-file-input @error('image') is-invalid @enderror" id="image" onchange="previewImage()" name='image' value="{{ old('image', $exercise->image) }}">
+                                <input type="file" class="custom-file-input @error('image') is-invalid @enderror" id="image" onchange="previewImage()" name='image' value="{{ old('image') }}">
                                 <label class="custom-file-label" for="image">Pilih Gambar</label>
                                 @error('image')
                                 <div class="invalid-feedback">
@@ -47,15 +42,7 @@
                             <label for="muscles">Fokus Otot</label>
                             <select multiple class="form-control js-example-basic-multiple" name="muscles[]" id="muscles">
                                 @foreach ($muscles as $muscle)
-                                    @if(old('muscles'))
-                                        @if(in_array($muscle->id, old('equipments')))
-                                        <option value="{{ $muscle->id }}" selected>{{ $muscle->name }}</option>
-                                        @endif
-                                    @elseif(in_array($muscle->id, $exercise->muscles->pluck('id')->all()))
-                                        <option value="{{ $muscle->id }}" selected>{{ $muscle->name }}</option> 
-                                    @else
-                                        <option value="{{ $muscle->id }}">{{ $muscle->name }}</option> 
-                                    @endif
+                                    <option value="{{ $muscle->id }}">{{ $muscle->name }}</option>
                                 @endforeach
                             </select>
                             @error('muscles')
@@ -68,15 +55,7 @@
                             <label for="equipments">Alat Latihan</label>
                             <select multiple class="form-control js-example-basic-multiple @error('equipments') is-invalid @enderror" name="equipments[]" id="equipments">
                                 @foreach ($equipments as $equipment)
-                                    @if(old('equipments'))
-                                        @if(in_array($equipment->id, old('equipments')))
-                                        <option value="{{ $equipment->id }}" selected>{{ $equipment->name }}</option>
-                                        @endif
-                                    @elseif(in_array($equipment->id, $exercise->equipments->pluck('id')->all()))
-                                        <option value="{{ $equipment->id }}" selected>{{ $equipment->name }}</option> 
-                                    @else
-                                        <option value="{{ $equipment->id }}">{{ $equipment->name }}</option> 
-                                    @endif
+                                    <option value="{{ $equipment->id }}">{{ $equipment->name }}</option>
                                 @endforeach
                             </select>
                             @error('equipments')
@@ -92,7 +71,7 @@
                         @error('desc')
                             <p class="text-danger">{{ $message }}</p>
                         @enderror
-                        <input id="desc" type="hidden" name="desc" value="{{ old('desc', $exercise->desc)  }}">
+                        <input id="desc" type="hidden" name="desc" value="{{ old('desc')  }}">
                         <trix-editor input="desc"></trix-editor>
                     </div>
 

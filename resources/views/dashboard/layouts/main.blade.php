@@ -48,6 +48,10 @@
     <!-- Page level plugins -->
     <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
 
+    {{-- sweet alert --}}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     {{-- Trix Editor --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('/css/trix.css') }}">
     <script type="text/javascript" src="{{ asset('/js/trix.js') }}"></script>

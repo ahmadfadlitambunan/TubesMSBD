@@ -1,6 +1,5 @@
 @extends('layouts.main')
 
-
 @section('container')
 <section class="page-title bg-2">
     <div class="container">
@@ -79,7 +78,7 @@
                     @if(request('wid') && request('action')) 
                         <button class="btn btn-small btn-color add-btn" data-toggle="modal" data-target="#addExercise" data-eid="{{ $exercise->id }}" >Tambahkan</button>
                     @else 
-                        <button class="btn btn-small btn-solid-border btn-color text-dark">Detail</button>
+                        <a href="{{ route('show-exercise', ['exercise' => $exercise->id]) }}" class="btn btn-small btn-solid-border btn-color text-dark">Detail</a>
                         <button class="btn btn-small btn-color add-btn" data-toggle="modal" data-target="#addExercise" data-eid="{{ $exercise->id }}">Tambahkan</button>
                     @endif
                 </div>
@@ -88,7 +87,6 @@
         @endforeach
         </div>
 	</div>
-
 
 <!-- Modal -->
 <div class="modal fade" id="addWorkout" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

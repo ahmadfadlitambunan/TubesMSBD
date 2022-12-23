@@ -5,21 +5,18 @@ CREATE OR REPLACE PROCEDURE verify_order(IN ord INT(20), IN adm INT(20), IN st C
 BEGIN
     DECLARE user INT; 
     DECLARE duration INT;
-    DECLARE invoice_id INT;
-    SELECT o.user_id INTO user FROM orders o WHERE o.id = ord;
-    SELECT plans.duration_month INTO duration FROM orders JOIN plans ON orders.id = plans.id WHERE orders.id = ord;
+    SELECT i.user_id INTO user FROM invoices i WHERE i.id = ord;
+    SELECT plans.duration_month INTO duration FROM invoices JOIN plans ON invoices.id = plans.id WHERE invoices.id = ord;
     START TRANSACTION;
-		UPDATE orders SET status = st, verified_by = adm, verified_at = NOW() WHERE id = ord;
-        INSERT INTO invoices (order_id, created_at, updated_at) VALUES (ord, NOW(), NOW());
-        SELECT LAST_INSERT_ID() INTO invoice_id;
+	    UPDATE invoices SET status = st, verified_by = adm, verified_at = NOW() WHERE id = ord;
         INSERT INTO memberships (invoice_id, user_id, start_at, expired_at, created_at, updated_at)
-        			VALUES (invoice_id,
-                      user,
-                      NOW(),
-                      DATE_ADD(NOW(), INTERVAL duration MONTH), 
-                      NOW(),
-                      NOW());
-        COMMIT;
+                     VALUES (ord,
+                            user,
+                            NOW(),
+                            DATE_ADD(NOW(), INTERVAL duration MONTH), 
+                            NOW(),
+                            NOW());
+    COMMIT;
 END&&
 
 // Query trigger untuk cek gerakan latihan yang duplikat dalam 1 program latihan;
@@ -33,6 +30,66 @@ BEGIN
     SET MESSAGE_TEXT = 'Program latihan tidak boleh memiliki gerakan yang sama lebih dari satu!';
     END IF;
 END &&
+DELIMITER ;
+
+// Query untuk mencheck apakah Pembayaran telah selesai sebelum di insert ke table memberships
+DELIMITER &&
+CREATE TRIGGER check_status_invoice_membership
+BEFORE INSERT ON `membership`
+FOR EACH ROW
+BEGIN
+    DECLARE st_invc char(1);
+    SELECT invoices.status INTO st_invc FROM invoices WHERE invoices.id = NEW.invoice_id;
+
+    IF(st_invc IS NULL || st_invc IN ['0', '2'])
+        THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Silahkan selesaikan pembayaran untuk mengaktifkan membership';
+    END IF;
+END&&
+DELIMITER ;
+
+// Query untuk mencheck apakah Pembayaran telah selesai sebelum di insert ke table memberships
+DELIMITER &&
+CREATE TRIGGER check_status_invoice_payment
+BEFORE INSERT ON `payments`
+FOR EACH ROW
+BEGIN
+    DECLARE st_invc char(1);
+    SELECT invoices.status INTO st_invc FROM invoices WHERE invoices.id = NEW.invoice_id;
+
+    IF(st_invc = '1')
+        THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Pesanan telah selesai, payment tidak dapat ditambahkan';
+    END IF;
+END&&
+DELIMITER ;
+
+// triger cek duplikat otot
+DELIMITER &&
+CREATE OR REPLACE TRIGGER check_duplikat_equipment_on_equipment_exercise_before_insert
+BEFORE INSERT ON `exercise_muscles`
+FOR EACH ROW
+BEGIN
+    IF(EXISTS(SELECT `exercise_muscles`.`muscle_id` FROM `exercise_muscles` WHERE `exercise_muscles`.muscle_id = NEW.muscle_id))
+    	THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Duplikat alat gym dalam 1 gerakan latihan';
+    END IF;
+END&&
+
+
+
+
+
+
+
+
+
+
+
+// function cek status invoice
+
+
+
 
 // fungsi menghitung jumlah gerakan dalam program
 DELIMITER &&
@@ -42,5 +99,58 @@ RETURN (SELECT COUNT('workout_exercises.exercise_id') FROM workouts w
 JOIN workout_exercises we ON id_workout = we.workout_id
 GROUP BY we.workout_id);
 END &&
+
+
+// Fungsi cek keaktifan member berdasarkan selisih member
+DELIMITER !!
+CREATE OR REPLACE FUNCTION cek_status_aktif_member(exp_date date) RETURNS tinyint(1)
+BEGIN
+	DECLARE flag tinyint(1);
+	DECLARE defisit int(10);
+    
+	SELECT datediff(exp_date, NOW()) INTO defisit;
+	IF(defisit >= 0) 
+		THEN SET flag = 1;
+	ELSE
+		SET flag = 0;
+	END IF;
+    
+	RETURN flag;
+END !!
+
+
+// View untuk mengambil member aktif
+CREATE VIEW view_member_aktif AS
+SELECT
+	m.id as member_id,
+    u.name as member_name,
+    u.no_phone as no_phone,
+    m.start_at,
+    m.expired_at,
+    cek_status_aktif_member(m.expired_at) as status,
+    p.name as member_plan
+FROM memberships m
+JOIN users u ON m.user_id = u.id
+JOIN plans p ON m.plan_id = p.id;
+
+// Procedure untuk membuat invoice
+DELIMITER &&
+CREATE OR REPLACE PROCEDURE make_invoice(u_id int(10), p_id int(10), mp_id int(10))
+BEGIN
+	DECLARE price int(20);
+    START TRANSACTION;
+        SELECT `plans`.`price`INTO price FROM `plans` WHERE `plans`.`id` = p_id;
+    	INSERT INTO `invoices` (user_id, plan_id, method_payment_id, pending_amount, expired_at, created_at, updated_at) VALUES (
+            	u_id,
+            	plan_id, 
+            	mp_id,
+                price,
+            	DATE_ADD(NOW(), INTERVAL 1 DAY),
+            	NOW(),
+            	NOW());
+    COMMIT;
+END&&
+
+
 
 

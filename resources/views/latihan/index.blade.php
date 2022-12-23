@@ -58,7 +58,7 @@
 							</div>
 							@endforeach
 						</div>
-						<a href="#" class="h6 text-right text-color">Selngkapnya</a>
+						<a href="{{ route('show-workout', ['workout' => $workout->id]) }}" class="h6 text-right text-color">Selngkapnya</a>
 					</div>
 				</div>
 			</div>

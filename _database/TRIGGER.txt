@@ -1,0 +1,81 @@
+// Query trigger untuk cek gerakan latihan yang duplikat dalam 1 program latihan;
+DELIMITER &&
+CREATE TRIGGER check_duplikat_exercise
+BEFORE INSERT ON `workout_exercises`
+FOR EACH ROW
+BEGIN
+    IF((SELECT COUNT(`exercise_id`) FROM `workout_exercises` WHERE `workout_id` = NEW.workout_id AND `exercise_id` = NEW.exercise_id) > 0)
+        THEN SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Program latihan tidak boleh memiliki gerakan yang sama lebih dari satu!';
+    END IF;
+END &&
+DELIMITER ;
+
+// Query untuk mencheck apakah Pembayaran telah selesai sebelum di insert ke table memberships
+DELIMITER &&
+CREATE TRIGGER check_status_invoice_membership
+BEFORE INSERT ON `membership`
+FOR EACH ROW
+BEGIN
+    DECLARE st_invc char(1);
+    SELECT invoices.status INTO st_invc FROM invoices WHERE invoices.id = NEW.invoice_id;
+
+    IF(st_invc IS NULL || st_invc IN ['0', '2'])
+        THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Silahkan selesaikan pembayaran untuk mengaktifkan membership';
+    END IF;
+END&&
+DELIMITER ;
+
+// Query untuk mencheck apakah Pembayaran telah selesai sebelum di insert ke table memberships
+DELIMITER &&
+CREATE TRIGGER check_status_invoice_payment
+BEFORE INSERT ON `payments`
+FOR EACH ROW
+BEGIN
+    DECLARE st_invc char(1);
+    SELECT invoices.status INTO st_invc FROM invoices WHERE invoices.id = NEW.invoice_id;
+
+    IF(st_invc = '1')
+        THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Pesanan telah selesai, payment tidak dapat ditambahkan';
+    END IF;
+END&&
+DELIMITER ;
+
+// triger cek duplikat otot
+DELIMITER &&
+CREATE OR REPLACE TRIGGER check_duplikat_equipment_on_equipment_exercise_before_insert
+BEFORE INSERT ON `exercise_equipments`
+FOR EACH ROW
+BEGIN
+    IF(EXISTS(SELECT `exercise_equipments`.`equipment_id` FROM `exercise_equipments` WHERE `exercise_equipments`.equipment_id = NEW.equipment_id))
+    	THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Duplikat alat gym dalam 1 gerakan latihan';
+    END IF;
+END&&
+
+// triger cek duplikat otot
+DELIMITER &&
+CREATE OR REPLACE TRIGGER check_duplikat_equipment_on_equipment_exercise_before_update
+BEFORE INSERT ON `exercise_equipments`
+FOR EACH ROW
+BEGIN
+    IF(EXISTS(SELECT `exercise_equipments`.`equipment_id` FROM `exercise_equipments` WHERE `exercise_equipments`.equipment_id = NEW.equipment_id))
+    	THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Duplikat alat gym dalam 1 gerakan latihan';
+    END IF;
+END&&
+
+
+// triger cek duplikat otot
+DELIMITER &&
+CREATE OR REPLACE TRIGGER check_duplikat_muscle_on_exercise_muscle_before_update
+BEFORE INSERT ON `exercise_muscle`
+FOR EACH ROW
+BEGIN
+    IF(EXISTS(SELECT `exercise_equipments`.`equipment_id` FROM `exercise_equipments` WHERE `exercise_equipments`.equipment_id = NEW.equipment_id))
+    	THEN SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Duplikat alat gym dalam 1 gerakan latihan';
+    END IF;
+END&&

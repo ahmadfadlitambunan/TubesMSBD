@@ -23,34 +23,36 @@
                     <table class='table table-bordered' id="myTable">
                         <thead style="text-align: center">
                             <tr>
-                                <th>Nama Gerakan</th>
-                                <th>Deskripsi</th>
-                                <th>Fokus Otot</th>
-                                <th>Alat Yang Digunakan</th>
-                                <th>Image</th>
+                                <th>ID member</th>
+                                <th>Nama</th>
+                                <th>Kontak</th>
+                                <th>Paket</th>
+                                <th>Tanggal Mulai</th>
+                                <th>Tanggal Berakhir</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody style="text-align: center">
-                            @foreach ($exercises as $exercise)
+                            @foreach ($members as $member)
                             <tr>
-                                <td>{{ $exercise->name }}</td>
-                                <td>{{ $exercise->desc }}</td>
+                                <td>{{ $member->member_id }}</td>
+                                <td>{{ $member->member_name }}</td>
+                                <td>{{ $member->no_phone }}</td>
+                                <td>{{ $member->member_plan }}</td>
+                                <td>{{ $member->start_at }}</td>
+                                <td>{{ $member->expired_at }}</td>
                                 <td>
-                                    @foreach ($exercise->muscles as $muscle)
-                                        {{ $muscle->name }} -
-                                    @endforeach
+                                    @if ($member->status == 1)
+                                    <span class="badge badge-success">Aktif</span>
+                                    @else
+                                    <span class="badge badge-danger">Expired</span>
+                                    @endif
                                 </td>
                                 <td>
-                                    @foreach ($exercise->equipments as $equipment)
-                                    {{ $equipment->name }} -
-                                    @endforeach
-                                </td>
-                                <td><img src="{{ asset("/images/about/img-1.jpg") }}" alt="" srcset="" width="100px" height="100px"></td>
-                                <td>
-                                    <a href="{{ route('exercise.show', ['exercise' => $exercise->id]) }}" class="btn btn-sm btn-success"><i
+                                    <a href="#" class="btn btn-sm btn-success"><i
                                         class="fa fa-eye" aria-hidden="true"></i></a>
-                                    <a href="{{ route('exercise.edit', ['exercise' => $exercise->id]) }}" class="btn btn-sm btn-warning"><i
+                                    <a href="#" class="btn btn-sm btn-warning"><i
                                             class="fa fa-edit" aria-hidden="true"></i></a>
 
                                     <form action="#" method="POST" class="d-inline">

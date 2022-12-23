@@ -23,8 +23,8 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-6">
-                                <h3>Nama Latihan</h3>
-                                <h5>6 Jenis Latihan</h5>
+                                <h3>{{ $workout->name }}</h3>
+                                <h5>{{ $workout->exercises->count() }} Jenis Latihan</h5>
                             </div>
                             <div class="col-6 text-right">
                                 <img src="{{ asset('images/about/img-1.jpg') }}" alt="" class="img-fluid rounded-circle" width="80px">
@@ -34,12 +34,11 @@
                             <div class="col-12">
                                 <h4>Detail</h4>
                                 <div class="row">
-                                    <div class="col-6 font-weight-bold">Jumlah Alat</div>
                                     <div class="col-6 font-weight-bold">Jumlah Set</div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">18 Alat</div>
-                                    <div class="col-6">20</div>
+                                    <div class="col-6">
+                                    </div>
                                 </div>
                             </div>
                         </div>

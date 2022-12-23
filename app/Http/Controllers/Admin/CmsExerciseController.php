@@ -1,9 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Models\Muscle;
 use App\Models\Exercise;
+use App\Models\Equipment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 
 class CmsExerciseController extends Controller
 {
@@ -14,7 +20,9 @@ class CmsExerciseController extends Controller
      */
     public function index()
     {
-        //
+        return view('dashboard.admin.master-data.gerakan.index', [
+            'exercises' => Exercise::with('muscles', 'equipments')->get()
+        ]);
     }
 
     /**
@@ -24,7 +32,10 @@ class CmsExerciseController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.admin.master-data.gerakan.create', [
+            'muscles' => Muscle::all(),
+            'equipments' => Equipment::all(),
+        ]);
     }
 
     /**
@@ -35,20 +46,43 @@ class CmsExerciseController extends Controller
      */
     public function store(Request $request)
     {
-        $exercise = Exercise::create([
-            'name' => $request->name,
-            'desc' => $request->desc,
-        ]);
-
-        $exercise->muscles()->sync(
-            $request->muscles
-        );
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'desc' => 'required',
+            'muscles' => 'required',
+            'equipments' => 'required',
+            'image' => 'required|image|file|mimes:jpeg,png,jpg,gif,svg|max:1024'
+        ]);   
         
-        $exercise->equipments()->sync(
-            $request->equipments
-        );
+        DB::beginTransaction();
 
-        return 0;
+        try {
+            if($request->file('image')) {
+                $validatedData['image'] = $request->file('image')->store('exercise-images');
+            }
+
+            $exercise = Exercise::create([
+                'name' => $validatedData['name'],
+                'desc' => $validatedData['desc'],
+                'image' => $validatedData['image']
+            ]); 
+    
+            $exercise->muscles()->sync(
+                $request->muscles
+            );
+            
+            $exercise->equipments()->sync(
+                $request->equipments
+            );
+            DB::commit();
+            return redirect()->route('exercise.index')->with('success', "Data Berhasil Ditambahkan");
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->with('error', "Data gagal ditambahkan, silahkan coba lagi");
+        }
+ 
+
     }
 
     /**
@@ -59,7 +93,9 @@ class CmsExerciseController extends Controller
      */
     public function show(Exercise $exercise)
     {
-        //
+        return view('dashboard.admin.master-data.gerakan.show', [
+            'exercise' => $exercise
+        ]);
     }
 
     /**
@@ -70,7 +106,11 @@ class CmsExerciseController extends Controller
      */
     public function edit(Exercise $exercise)
     {
-        //
+        return view('dashboard.admin.master-data.gerakan.edit', [
+            'exercise' => $exercise,
+            'muscles' => Muscle::all(),
+            'equipments' => Equipment::all()
+        ]);
     }
 
     /**
@@ -82,7 +122,48 @@ class CmsExerciseController extends Controller
      */
     public function update(Request $request, Exercise $exercise)
     {
-        //
+        $rules = [
+            'name' => 'required|max:255',
+            'desc' => 'required',
+            'muscles' => 'required',
+            'equipments' => 'required',
+            'image' => 'required|image|file|mimes:jpeg,png,jpg,gif,svg|max:1024'
+        ];
+
+        DB::beginTransaction();
+        try {
+
+            $validatedData = $request->validate($rules);
+
+            if($request->file('image')) {
+                if($request->oldImage) {
+                    Storage::delete($request->oldImage);
+                }
+                $validatedData['image'] = $request->file('image')->store('exercise-images');
+            }
+
+            $exercise->update([
+                $exercise->name = $validatedData['name'],
+                $exercise->desc = $validatedData['desc'],
+                $exercise->image = $validatedData['image'],
+            ]);
+
+    
+            $exercise->muscles()->sync(
+                $request->muscles
+            );
+            
+            $exercise->equipments()->sync(
+                $request->equipments
+            );
+
+            DB::commit();
+            return redirect()->route('exercise.index')->with('success', "Data Berhasil Ditambahkan");
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->with('error', "Data gagal ditambahkan, silahkan coba lagi");
+        }
     }
 
     /**

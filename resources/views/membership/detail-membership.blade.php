@@ -73,3 +73,21 @@
     </div>
 </section>
 @endsection
+
+@section('script')
+@if(session()->has('success'))
+<script>Swal.fire({
+    icon: 'success',
+    title: '{{ session('success') }}',
+    showConfirmButton: true,
+})
+</script>
+@elseif(session()->has('error'))
+<script>Swal.fire({
+    icon: 'error',
+    title:  '{{ session('error') }}',
+    showConfirmButton: true,
+    })
+</script>
+@endif
+@endsection
