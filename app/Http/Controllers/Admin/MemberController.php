@@ -35,6 +35,26 @@ class MemberController extends Controller
         ]);
     }
 
+    public function report_pembayaran()
+    {
+        $member = DB::table('invoices as in') ->join('users as u' , 'in.user_id', '=', 'u.id')
+        ->join('plans as p', 'in.plan_id', '=', 'p.id')
+        ->join('method_payments as mp', 'in.method_payment_id', '=', 'mp.id')
+        ->select('in.id', 'in.user_id', 'u.name as user_name', 'mp.name as mp_name', 'p.name as plan_name', 'in.verified_at', 'in.pending_amount', 'in.status')
+        ->get();
+        $verified_by = DB::table('invoices as in') ->join('users as u', 'in.verified_by', '=', 'u.id')
+        ->select('u.name')
+        ->where('u.level', '=', 1)
+        ->get();
+        return view('dashboard.admin.member.report_pembayaran', compact('member', 'verified_by'));
+    }
+
+    public function report_data_member()
+    {
+        $members = DB::table('data_member')->get();
+        return view('dashboard.admin.member.report_data_member', compact('members'));
+    }
+
     public function create() {
         return view('dashboard.admin.member.create', [
             'goals' => Goal::all(),

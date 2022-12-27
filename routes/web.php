@@ -98,6 +98,8 @@ Route::group(['prefix' => 'admin'], function() {
     // Membership
     Route::get('/member/aktif', [MemberController::class, 'index'])->name('member-active');
     Route::get('/member/all', [MemberController::class, 'indexALL'])->name('member-all');
+    Route::get('/member/all/report_pembayaran', [MemberController::class, 'report_pembayaran'])->name('report_pembayaran');
+    Route::get('/member/all/report_data_member', [MemberController::class, 'report_data_member'])->name('report_data_member');
     Route::get('/member/in-aktif', [MemberController::class, 'indexInactive'])->name('member-inactive');
     Route::get('/member/create', [MemberController::class, 'create'])->name('member-create');
     Route::post('/member', [MemberController::class, 'makeMembership'])->name('make-member');
